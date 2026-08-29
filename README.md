@@ -42,4 +42,4 @@ https://sabas0ba.github.io/vrc_sabaaccessory/index.json
 
 ## License
 
-MIT License。詳細は [LICENSE](LICENSE) を参照してください。
+Apache License 2.0。詳細は [LICENSE](LICENSE) を参照してください。
