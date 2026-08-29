@@ -361,7 +361,10 @@ Shader "SabaAccessory/Digital Halo"
             float2 upper = 1.0 - smoothstep(1.0 - softness, 1.0, warpedUv);
             interior = lower.x * lower.y * upper.x * upper.y;
             float threshold = saturate(_RectDissolve * 0.88);
-            dissolve = smoothstep(threshold, min(threshold + 0.14, 1.0), noiseA);
+            // A zero dissolve value is the explicit "disabled" state.
+            dissolve = _RectDissolve <= 0.0001
+                ? 1.0
+                : smoothstep(threshold, min(threshold + 0.14, 1.0), noiseA);
             haze = lerp(1.0, lerp(0.22, 1.0, noiseB), _RectHaze);
         }
 

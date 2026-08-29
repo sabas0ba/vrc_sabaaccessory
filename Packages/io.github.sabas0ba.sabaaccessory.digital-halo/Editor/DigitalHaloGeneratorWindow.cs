@@ -302,7 +302,10 @@ namespace SabaAccessory.DigitalHalo.Editor
             mesh.SetUVs(2, directionUv);
             mesh.SetIndices(indices, MeshTopology.Points, 0, false);
             float extent = clampedRadius + clampedSpan + 0.25f;
-            mesh.bounds = new Bounds(Vector3.zero, new Vector3(extent * 2f, 0.5f, extent * 2f));
+            // Rectangles are emitted in world XZ regardless of the parent rotation.
+            // A conservative cube keeps Unity culling bounds valid for rotated Head bones.
+            float boundExtent = extent + 0.5f;
+            mesh.bounds = new Bounds(Vector3.zero, new Vector3(boundExtent * 2f, boundExtent * 2f, boundExtent * 2f));
             return mesh;
         }
 
