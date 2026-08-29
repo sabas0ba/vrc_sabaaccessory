@@ -75,8 +75,8 @@ def validate_manifest(package_dir: Path) -> dict[str, Any]:
     if "@" not in email:
         raise ValidationError(f"{manifest_path}: author.email is invalid")
 
-    if manifest.get("license") != "MIT":
-        raise ValidationError(f"{manifest_path}: license must be MIT")
+    if manifest.get("license") != "Apache-2.0":
+        raise ValidationError(f"{manifest_path}: license must be Apache-2.0")
     dependencies = manifest.get("vpmDependencies")
     if not isinstance(dependencies, dict):
         raise ValidationError(f"{manifest_path}: vpmDependencies must be an object")
@@ -162,4 +162,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

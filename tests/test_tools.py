@@ -32,7 +32,7 @@ class ToolTests(unittest.TestCase):
                 "name": "sabas0ba",
                 "email": "sabas0ba@outlook.com",
             },
-            "license": "MIT",
+            "license": "Apache-2.0",
             "vpmDependencies": {"com.vrchat.avatars": "3.10.x"},
         }
         (package_dir / "package.json").write_text(
