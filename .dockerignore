@@ -1,0 +1,14 @@
+.git
+.direnv
+.work
+Library
+Temp
+Obj
+Logs
+UserSettings
+build
+Builds
+Website/index.json
+result
+result-*
+
