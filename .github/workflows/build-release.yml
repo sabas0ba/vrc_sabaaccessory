@@ -1,0 +1,139 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - "*/v*"
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package ID to release
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: release-${{ github.ref }}-${{ inputs.package }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Build pinned development environment
+        run: docker build --tag sabaaccessory-dev .
+
+      - name: Validate repository
+        run: |
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev make check
+
+      - name: Resolve release metadata
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_PACKAGE: ${{ inputs.package }}
+        run: |
+          mkdir -p build
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/release_info.py \
+              --ref-type "$REF_TYPE" \
+              --ref-name "$REF_NAME" \
+              --package "$INPUT_PACKAGE" \
+              --output build/release.env
+          cat build/release.env >> "$GITHUB_ENV"
+
+      - name: Build deterministic package archive
+        run: |
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/build_package.py \
+              "Packages/$PACKAGE" "build/$ZIP_NAME"
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if docker run --rm --network default \
+            --env GH_TOKEN \
+            --env GITHUB_REPOSITORY \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev gh release view "$TAG" >/dev/null 2>&1; then
+            docker run --rm --network default \
+              --env GH_TOKEN \
+              --env GITHUB_REPOSITORY \
+              --volume "$GITHUB_WORKSPACE:/workspace" \
+              --workdir /workspace \
+              sabaaccessory-dev \
+              gh release upload "$TAG" "build/$ZIP_NAME" --clobber
+          else
+            docker run --rm --network default \
+              --env GH_TOKEN \
+              --env GITHUB_REPOSITORY \
+              --volume "$GITHUB_WORKSPACE:/workspace" \
+              --workdir /workspace \
+              sabaaccessory-dev \
+              gh release create "$TAG" "build/$ZIP_NAME" \
+                --target "$GITHUB_SHA" \
+                --title "$PACKAGE $VERSION" \
+                --notes "VPM repository: https://sabas0ba.github.io/vrc_sabaaccessory/index.json"
+          fi
+
+      - name: Build and upload release manifest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          url="$(docker run --rm --network default \
+            --env GH_TOKEN \
+            --env GITHUB_REPOSITORY \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            gh release view "$TAG" --json assets \
+              --jq ".assets[] | select(.name == \"$ZIP_NAME\") | .url")"
+          test -n "$url"
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/build_manifest.py \
+              --package "Packages/$PACKAGE" \
+              --archive "build/$ZIP_NAME" \
+              --url "$url" \
+              --output "build/$JSON_NAME"
+          docker run --rm --network default \
+            --env GH_TOKEN \
+            --env GITHUB_REPOSITORY \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            gh release upload "$TAG" "build/$JSON_NAME" --clobber
+
+      - name: Rebuild VPM listing from the default branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm --network default \
+            --env GH_TOKEN \
+            --env GITHUB_REPOSITORY \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            gh workflow run build-listing.yml \
+              --repo "$GITHUB_REPOSITORY" \
+              --ref "${{ github.event.repository.default_branch }}"
+

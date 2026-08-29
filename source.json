@@ -1,0 +1,16 @@
+{
+  "name": "SabaAccessory",
+  "id": "io.github.sabas0ba.sabaaccessory",
+  "url": "https://sabas0ba.github.io/vrc_sabaaccessory/index.json",
+  "author": "sabas0ba",
+  "description": "VRChat Avatar 向け Props package 集。",
+  "infoLink": {
+    "url": "https://github.com/sabas0ba/vrc_sabaaccessory",
+    "text": "GitHub リポジトリ"
+  },
+  "bannerUrl": "",
+  "githubRepo": "sabas0ba/vrc_sabaaccessory",
+  "packages": [
+    "io.github.sabas0ba.sabaaccessory.digital-halo"
+  ]
+}

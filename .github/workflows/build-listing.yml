@@ -1,0 +1,69 @@
+name: Build VPM Listing
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - source.json
+      - Website/**
+      - Packages/**/package.json
+      - .github/scripts/build_listing.py
+      - .github/scripts/check_package.py
+      - .github/workflows/build-listing.yml
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Build pinned development environment
+        run: docker build --tag sabaaccessory-dev .
+
+      - name: Generate VPM listing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm --network default \
+            --env GITHUB_TOKEN \
+            --env GITHUB_REPOSITORY \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/build_listing.py \
+              --source source.json \
+              --output Website/index.json
+
+      - name: Validate generated JSON without network access
+        run: |
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 -m json.tool Website/index.json >/dev/null
+
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: Website
+
+      - name: Deploy GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+

@@ -1,0 +1,35 @@
+{
+  "name": "io.github.sabas0ba.sabaaccessory.digital-halo",
+  "displayName": "SabaAccessory Digital Halo",
+  "version": "0.2.0",
+  "unity": "2022.3",
+  "description": "Circle、Quad、Line、Wingのpoint cloudからWorld座標ベースのRectを生成するPC Avatar向けGeometry Block Effect。色モード、個別歪み、Particleを備えます。",
+  "author": {
+    "name": "sabas0ba",
+    "email": "sabas0ba@outlook.com",
+    "url": "https://github.com/sabas0ba"
+  },
+  "license": "MIT",
+  "licensesUrl": "https://github.com/sabas0ba/vrc_sabaaccessory/blob/main/LICENSE",
+  "documentationUrl": "https://github.com/sabas0ba/vrc_sabaaccessory/blob/main/Packages/io.github.sabas0ba.sabaaccessory.digital-halo/README.md",
+  "changelogUrl": "https://github.com/sabas0ba/vrc_sabaaccessory/blob/main/Packages/io.github.sabas0ba.sabaaccessory.digital-halo/CHANGELOG.md",
+  "samples": [
+    {
+      "displayName": "Digital Halo Demo",
+      "description": "Circle、Quad、Line、Wingの4形状と色モード、ブロックParticleを比較するDemo Sceneです。",
+      "path": "Samples~/Digital Halo Demo"
+    }
+  ],
+  "vpmDependencies": {
+    "com.vrchat.avatars": "3.10.x"
+  },
+  "keywords": [
+    "vrchat",
+    "avatar",
+    "halo",
+    "glitch",
+    "noise",
+    "vfx",
+    "unlit"
+  ]
+}

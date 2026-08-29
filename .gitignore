@@ -1,0 +1,40 @@
+# Unity が生成するディレクトリ
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]serSettings/
+/[Mm]emoryCaptures/
+
+# ビルド・検証生成物
+/build/
+/Builds/
+/Website/index.json
+/result
+/result-*
+/.work/
+/.direnv/
+
+# IDE
+/.idea/
+/.vscode/
+/.vs/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+
+# Unity/OS の一時ファイル
+*.tmp
+*.pdb
+*.mdb
+*.pidb
+sysinfo.txt
+.DS_Store
+Thumbs.db
+
+# 配布生成物
+*.unitypackage
+*.zip
+
