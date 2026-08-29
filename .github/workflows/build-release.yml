@@ -97,14 +97,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          url="$(docker run --rm --network default \
-            --env GH_TOKEN \
-            --env GITHUB_REPOSITORY \
-            --volume "$GITHUB_WORKSPACE:/workspace" \
-            --workdir /workspace \
-            sabaaccessory-dev \
-            gh release view "$TAG" --json assets \
-              --jq ".assets[] | select(.name == \"$ZIP_NAME\") | .url")"
+          url="https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$ZIP_NAME"
           test -n "$url"
           docker run --rm --network none \
             --volume "$GITHUB_WORKSPACE:/workspace" \
@@ -136,4 +129,3 @@ jobs:
             gh workflow run build-listing.yml \
               --repo "$GITHUB_REPOSITORY" \
               --ref "${{ github.event.repository.default_branch }}"
-
