@@ -1,7 +1,7 @@
 {
   "name": "io.github.sabas0ba.sabaaccessory.digital-halo",
   "displayName": "SabaAccessory Digital Halo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "unity": "2022.3",
   "description": "Circle、Quad、Line、Wingのpoint cloudからWorld座標ベースのRectを生成するPC Avatar向けGeometry Block Effect。色モード、個別歪み、Particleを備えます。",
   "author": {
