@@ -26,7 +26,7 @@ Runtime/ または Editor/
     "email": "sabas0ba@outlook.com",
     "url": "https://github.com/sabas0ba"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "vpmDependencies": {
     "com.vrchat.avatars": "3.10.x"
   }

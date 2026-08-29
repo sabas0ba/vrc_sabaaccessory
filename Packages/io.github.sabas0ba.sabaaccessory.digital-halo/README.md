@@ -79,4 +79,4 @@ Demo Scene に人体 mesh は含まれません。Circle、Quad、Line、Wing �
 
 ## License
 
-MIT License。詳細は `LICENSE.md` を参照してください。
+Apache License 2.0。詳細は `LICENSE.md` を参照してください。
