@@ -15,6 +15,10 @@ RUN mkdir -p /etc/nix \
 ENV SABAACCESSORY_PROFILE=/nix/var/nix/profiles/sabaaccessory-dev
 WORKDIR /workspace
 
+# GitHub Actions mounts the checkout with a host UID. Allow tools such as
+# `gh release` to inspect the mounted repository inside the container.
+RUN git config --global --add safe.directory /workspace
+
 COPY flake.nix flake.lock ./
 COPY nix ./nix
 
