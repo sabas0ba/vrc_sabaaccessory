@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 - 2026-08-30
+
+- Apache-2.0ライセンス表記とCI検証を統一
+- ReleaseコンテナのGit safe.directory設定を追加
+- Dissolve=0で全Rectを表示する挙動を保証
+- 親Transform回転時のRenderer boundsを拡張
+
 ## 0.2.0 - 2026-08-30
 
 - Circle、Quad、Line、Wing の4種類の point cloud shape を追加
