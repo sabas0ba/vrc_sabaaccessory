@@ -2,6 +2,35 @@
 
 `io.github.sabas0ba.sabaaccessory.digital-halo` は、円周などの point cloud を Geometry Shader に渡し、時間変化する Rect を生成する PC Avatar 向け VPM package です。完全なトーラス mesh やテクスチャは使用しません。
 
+## 概要
+
+- Circle、Quad、Line、Wing の4形状を生成
+- 水平・垂直 Rect の出現率、重複数、サイズ、変位を Material から設定
+- World 座標を基準としたグリッチ、歪み、かすれ、欠落ノイズ
+- モノクロ、固定パレット、単色、色範囲の4種類の Color Mode
+- 各 shape の point cloud から短寿命のブロック Particle を生成
+- 実行時 MonoBehaviour とテクスチャは不使用
+
+## 動作環境
+
+| 項目 | 対応範囲 |
+| --- | --- |
+| Unity | 2022.3 |
+| VRChat SDK | Avatars SDK 3.10.x |
+| Avatar platform | PC |
+| Package manager | VCC または ALCOM |
+
+Geometry Shader を使用するため Android/Quest Avatar では動作しません。
+
+## 導入
+
+1. VCC または ALCOM に `https://sabas0ba.github.io/vrc_sabaaccessory/index.json` を repository として追加します。
+2. 対象の Avatar project を開きます。
+3. `SabaAccessory Digital Halo` package を追加します。
+4. Unity で Avatar project を開き、Generator または Demo Scene を使用します。
+
+既存の package を更新する場合は、VCC / ALCOM 上で対象 project の package version を確認してから更新してください。
+
 ## Demo Scene
 
 `Tools > SabaAccessory > Digital Halo > Import and Open Demo Scene` で Sample を取り込みます。`DigitalHaloDemo.unity` には人体 Mesh を置かず、次の4形状を配置しています。

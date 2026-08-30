@@ -10,6 +10,7 @@
 /build/
 /Builds/
 /Website/index.json
+/Website/docs/
 /result
 /result-*
 /.work/
@@ -37,4 +38,3 @@ Thumbs.db
 # 配布生成物
 *.unitypackage
 *.zip
-
