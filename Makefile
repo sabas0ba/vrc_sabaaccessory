@@ -32,4 +32,4 @@ docker-shell: docker-build
 	@$(CONTAINER_ENGINE) run --rm -it -v "$(CURDIR):/workspace" -w /workspace $(IMAGE) bash
 
 clean:
-	@rm -rf build Website/index.json result result-*
+	@rm -rf build Website/docs Website/index.json .work result result-*

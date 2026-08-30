@@ -3,42 +3,128 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="VRChat Avatar 向け Props package 集">
-    <title>SabaAccessory</title>
-    <style>
-      :root {
-        color-scheme: light dark;
-        font-family: system-ui, sans-serif;
-        line-height: 1.6;
-      }
-
-      body {
-        max-width: 48rem;
-        margin: 4rem auto;
-        padding: 0 1.5rem;
-      }
-
-      code {
-        overflow-wrap: anywhere;
-      }
-
-      a {
-        color: #3b82f6;
-      }
-    </style>
+    <meta name="description" content="VRChat Avatar 向け Props を配布する SabaAccessory VPM repository">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)" data-color="#f3f5f9">
+    <meta name="theme-color" content="#0d1118" media="(prefers-color-scheme: dark)" data-color="#0d1118">
+    <title>SabaAccessory — VPM Repository</title>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('sabaaccessory-theme');
+          if (saved === 'light' || saved === 'dark') {
+            document.documentElement.setAttribute('data-theme', saved);
+          }
+        } catch (error) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/site.css">
+    <script src="assets/site.js" defer></script>
   </head>
   <body>
-    <main>
-      <h1>SabaAccessory</h1>
-      <p>VRChat Avatar 向け Props を VPM package として配布する repository です。</p>
-      <p>VCC/ALCOM に次の repository URL を追加してください。</p>
-      <p><code>https://sabas0ba.github.io/vrc_sabaaccessory/index.json</code></p>
-      <p>
-        <a href="index.json">VPM listing</a>
-        ·
-        <a href="https://github.com/sabas0ba/vrc_sabaaccessory">GitHub</a>
-      </p>
-    </main>
+    <a class="skip-link" href="#content">本文へ移動</a>
+
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="SabaAccessory トップページ">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>SabaAccessory</span>
+        </a>
+        <nav class="site-nav" aria-label="サイト内ナビゲーション">
+          <a href="#packages">パッケージ</a>
+          <a href="docs/index.html">ドキュメント</a>
+          <a href="https://github.com/sabas0ba/vrc_sabaaccessory">GitHub</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" hidden aria-pressed="false">
+          <span class="theme-icon theme-icon-light" aria-hidden="true"></span>
+          <span class="theme-icon theme-icon-dark" aria-hidden="true"></span>
+          <span>テーマ</span>
+        </button>
+      </header>
+
+      <main id="content">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">VRChat Avatar Props / VPM Repository</p>
+            <h1 id="hero-title">SabaAccessory</h1>
+            <p class="lede">
+              SabaAccessory は Unity 2022.3 と VRChat Avatars SDK 3.10.x を対象とした
+              VPM package collection です。導入手順と各ツールの説明を同じサイトで公開しています。
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" id="add-repository" href="#">VCC に追加</a>
+              <a class="button button-secondary" href="docs/index.html">ドキュメントを読む</a>
+            </div>
+            <ul class="compatibility" aria-label="対応環境">
+              <li>Unity 2022.3</li>
+              <li>VRChat Avatars SDK 3.10.x</li>
+              <li>VCC / ALCOM</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="repository-panel" aria-labelledby="repository-title">
+          <div>
+            <p class="section-label">Repository URL</p>
+            <h2 id="repository-title">VPM repository を登録</h2>
+            <p class="section-summary">
+              VCC または ALCOM の package repository 設定に次の URL を追加してください。
+            </p>
+          </div>
+          <div class="url-row">
+            <code class="repository-url" id="repository-url">https://sabas0ba.github.io/vrc_sabaaccessory/index.json</code>
+            <button class="copy-button" id="copy-button" type="button">コピー</button>
+          </div>
+          <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="packages-section" id="packages" aria-labelledby="packages-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Packages</p>
+              <h2 id="packages-title">収録パッケージ</h2>
+            </div>
+            <p class="section-summary">各 package の用途、導入方法、設定項目、制約を確認できます。</p>
+          </div>
+          <div class="package-grid" id="package-list" aria-live="polite">
+            <article class="package-card package-loading">
+              <p>パッケージ情報を読み込んでいます。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="workflow-section" aria-labelledby="workflow-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Usage</p>
+              <h2 id="workflow-title">導入から設定まで</h2>
+            </div>
+          </div>
+          <ol class="workflow-list">
+            <li>
+              <span class="workflow-number">01</span>
+              <div><h3>Repository を追加</h3><p>上のボタンまたは URL を使用して VCC / ALCOM に登録します。</p></div>
+            </li>
+            <li>
+              <span class="workflow-number">02</span>
+              <div><h3>Package を導入</h3><p>対象の Avatar project へ必要な package を追加します。</p></div>
+            </li>
+            <li>
+              <span class="workflow-number">03</span>
+              <div><h3>ドキュメントに従って設定</h3><p>Generator、Material parameter、制約を確認して Avatar へ設定します。</p></div>
+            </li>
+          </ol>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>SabaAccessory</p>
+        <nav aria-label="フッターナビゲーション">
+          <a href="docs/index.html">ドキュメント</a>
+          <a href="index.json">index.json</a>
+          <a href="https://github.com/sabas0ba/vrc_sabaaccessory">GitHub</a>
+        </nav>
+      </footer>
+    </div>
   </body>
 </html>
-

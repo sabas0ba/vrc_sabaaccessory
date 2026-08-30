@@ -8,7 +8,11 @@ on:
     paths:
       - source.json
       - Website/**
+      - docs/**
+      - Packages/**/*.md
       - Packages/**/package.json
+      - .github/scripts/build_docs.py
+      - .github/scripts/check_docs.py
       - .github/scripts/build_listing.py
       - .github/scripts/check_package.py
       - .github/workflows/build-listing.yml
@@ -57,6 +61,19 @@ jobs:
             sabaaccessory-dev \
             python3 -m json.tool Website/index.json >/dev/null
 
+      - name: Render and validate documentation without network access
+        run: |
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/build_docs.py
+          docker run --rm --network none \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            sabaaccessory-dev \
+            python3 .github/scripts/check_docs.py --site Website
+
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
@@ -66,4 +83,3 @@ jobs:
       - name: Deploy GitHub Pages
         id: deploy
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
-

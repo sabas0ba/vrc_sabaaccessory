@@ -12,7 +12,23 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from check_package import ValidationError, load_json
+from check_package import SEMVER_RE, ValidationError, load_json
+
+
+def semver_key(version: str) -> tuple[int, int, int, int, tuple[tuple[int, int | str], ...]]:
+    """SemVer 2.0.0 の precedence を Python の比較可能な tuple に変換する。"""
+    if not SEMVER_RE.fullmatch(version):
+        raise ValidationError(f"invalid SemVer version: {version}")
+    precedence = version.split("+", 1)[0]
+    core, separator, prerelease = precedence.partition("-")
+    major, minor, patch = (int(item) for item in core.split("."))
+    identifiers: tuple[tuple[int, int | str], ...] = ()
+    if separator:
+        identifiers = tuple(
+            (0, int(item)) if item.isdigit() else (1, item)
+            for item in prerelease.split(".")
+        )
+    return major, minor, patch, 0 if separator else 1, identifiers
 
 
 def request_json(url: str, token: str) -> Any:
@@ -73,6 +89,7 @@ def build_listing(source: dict[str, Any], releases: list[dict[str, Any]], token:
                 continue
             if not isinstance(version, str) or not version:
                 raise ValidationError(f"release manifest has no version: {url}")
+            semver_key(version)
             if not isinstance(manifest.get("url"), str) or not isinstance(
                 manifest.get("zipSHA256"), str
             ):
@@ -90,7 +107,7 @@ def build_listing(source: dict[str, Any], releases: list[dict[str, Any]], token:
         packages[package_name] = {
             "versions": {
                 version: package_versions[version]
-                for version in sorted(package_versions, reverse=True)
+                for version in sorted(package_versions, key=semver_key, reverse=True)
             }
         }
 
@@ -131,4 +148,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
