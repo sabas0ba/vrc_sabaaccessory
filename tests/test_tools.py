@@ -21,7 +21,7 @@ from build_docs import (  # noqa: E402
     render_markdown,
 )
 from build_manifest import build_manifest  # noqa: E402
-from build_listing import build_listing  # noqa: E402
+from build_listing import build_listing, semver_key  # noqa: E402
 from build_package import build_package  # noqa: E402
 from check_docs import check_site  # noqa: E402
 from check_package import validate_repository  # noqa: E402
@@ -82,6 +82,22 @@ class ToolTests(unittest.TestCase):
         listing = build_listing(source, [], "")
         self.assertEqual(listing["packages"], {})
         self.assertNotIn("githubRepo", listing)
+
+    def test_semver_order_uses_precedence(self) -> None:
+        versions = [
+            "0.9.0",
+            "0.10.0",
+            "1.0.0-alpha",
+            "1.0.0-alpha.2",
+            "1.0.0-alpha.10",
+            "1.0.0",
+            "1.0.0+build.2",
+        ]
+        ordered = sorted(versions, key=semver_key, reverse=True)
+        self.assertIn(ordered[0], {"1.0.0", "1.0.0+build.2"})
+        self.assertLess(ordered.index("0.10.0"), ordered.index("0.9.0"))
+        self.assertLess(ordered.index("1.0.0-alpha.10"), ordered.index("1.0.0-alpha.2"))
+        self.assertLess(ordered.index("1.0.0-alpha.2"), ordered.index("1.0.0-alpha"))
 
     def test_package_archive_is_reproducible(self) -> None:
         with tempfile.TemporaryDirectory(dir=WORK) as temporary:

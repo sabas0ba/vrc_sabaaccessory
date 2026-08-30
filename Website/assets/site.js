@@ -96,10 +96,58 @@
     return node;
   }
 
+  function parseSemver(value) {
+    var match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.exec(value);
+    if (!match) return null;
+    return {
+      core: [Number(match[1]), Number(match[2]), Number(match[3])],
+      prerelease: match[4] ? match[4].split('.') : []
+    };
+  }
+
+  function compareSemver(left, right) {
+    var leftVersion = parseSemver(left);
+    var rightVersion = parseSemver(right);
+    if (!leftVersion || !rightVersion) return left.localeCompare(right);
+
+    for (var coreIndex = 0; coreIndex < 3; coreIndex += 1) {
+      if (leftVersion.core[coreIndex] !== rightVersion.core[coreIndex]) {
+        return leftVersion.core[coreIndex] - rightVersion.core[coreIndex];
+      }
+    }
+
+    var leftPrerelease = leftVersion.prerelease;
+    var rightPrerelease = rightVersion.prerelease;
+    if (!leftPrerelease.length || !rightPrerelease.length) {
+      if (leftPrerelease.length === rightPrerelease.length) return 0;
+      return leftPrerelease.length ? -1 : 1;
+    }
+
+    var length = Math.max(leftPrerelease.length, rightPrerelease.length);
+    for (var index = 0; index < length; index += 1) {
+      if (index >= leftPrerelease.length) return -1;
+      if (index >= rightPrerelease.length) return 1;
+      var leftIdentifier = leftPrerelease[index];
+      var rightIdentifier = rightPrerelease[index];
+      if (leftIdentifier === rightIdentifier) continue;
+      var leftNumeric = /^\d+$/.test(leftIdentifier);
+      var rightNumeric = /^\d+$/.test(rightIdentifier);
+      if (leftNumeric && rightNumeric) return Number(leftIdentifier) - Number(rightIdentifier);
+      if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+      return leftIdentifier < rightIdentifier ? -1 : 1;
+    }
+    return 0;
+  }
+
   function latestManifest(entry) {
     var versions = entry && entry.versions ? entry.versions : {};
     var names = Object.keys(versions);
-    return names.length ? versions[names[0]] : null;
+    if (!names.length) return null;
+    var latest = names[0];
+    for (var index = 1; index < names.length; index += 1) {
+      if (compareSemver(names[index], latest) > 0) latest = names[index];
+    }
+    return versions[latest];
   }
 
   function appendTags(card, manifest) {
