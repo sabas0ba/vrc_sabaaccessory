@@ -6,7 +6,6 @@
   "description": "Circle、Quad、Line、Wingのpoint cloudからWorld座標ベースのRectを生成するPC Avatar向けGeometry Block Effect。色モード、個別歪み、Particleを備えます。",
   "author": {
     "name": "sabas0ba",
-    "email": "sabas0ba@outlook.com",
     "url": "https://github.com/sabas0ba"
   },
   "license": "Apache-2.0",
