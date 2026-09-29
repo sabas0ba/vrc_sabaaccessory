@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Apache-2.0 の宣言、公式ライセンスURL、同梱するライセンス全文と README の表記を統一。
+
 ## 0.2.1 - 2026-08-30
 
 - Apache-2.0ライセンス表記とCI検証を統一
